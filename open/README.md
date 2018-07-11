@@ -1,0 +1,1 @@
+# [微信开放平台 SDK](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&lang=zh_CN&token=afb9521b481731c9a457d758e8b97390b6abc5e1)
