@@ -27,6 +27,7 @@ type DataItem struct {
 }
 
 // 发送模板消息
+// 必须先关注公众号
 func Send(accessToken string, msg *TemplateMessage) (msgid int64, err error) {
 	baseURL := "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" +
 		url.QueryEscape(accessToken)

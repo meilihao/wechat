@@ -53,7 +53,7 @@ func main() {
 	r.GET("/callback/wechat/mp", _VerifySetting)
 
 	r.GET("/redirect/wechat/mp/oauth2", _AuthFromWeb)
-	r.GET("/callback/wechat/mp/oauth2", _AuthFromWebCallback)
+	r.GET("/callback/wechat/mp/oauth2", _AuthFromWebCallback) // 未返回200时, 微信服务器会重试该请求, 因此该函数要尽量简单,避免微信重试
 
 	r.Run(":8888")
 }
@@ -155,7 +155,6 @@ func _AuthFromWebCallback(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, ErrJSON(fmt.Errorf("state 不匹配, session 中的为 %q, url 传递过来的是 %q", savedState, queryState)))
 		return
 	}
-	sessionStorage.Delete(sessionID)
 
 	code := ctx.Query("code")
 	if code == "" {
@@ -206,5 +205,6 @@ func _AuthFromWebCallback(ctx *gin.Context) {
 		return
 	}
 
+	sessionStorage.Delete(sessionID) // 最后删除sessionID, 否则微信服务器重试时会找不到state
 	ctx.String(http.StatusOK, token.OpenId)
 }
