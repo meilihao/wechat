@@ -136,7 +136,7 @@ func (ts *TokenServer) updateToken() {
 			log.Printf("reset timer(%d,%v): %t", du, time.Now(), ts.timer.Reset(getTimerDuration(du)))
 		} else {
 			log.Printf("err: %v\n", err)
-			time.Sleep(300 * time.Millisecond)
+			time.Sleep(1000 * time.Millisecond)
 
 			ts.refreshTokenChan <- struct{}{}
 		}
