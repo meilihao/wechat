@@ -48,7 +48,7 @@ type Token struct {
 	ExpiresIn    int64  `json:"expires_in"`              // access_token接口调用凭证超时时间，单位（秒）
 	RefreshToken string `json:"refresh_token,omitempty"` // 用户刷新access_token
 
-	OpenId  string `json:"openid,omitempty"`  // 用户唯一标识，请注意，在未关注公众号时，用户访问公众号的网页，也会产生一个用户和公众号唯一的OpenID
+	OpenId  string `json:"openid,omitempty"`  // 用户唯一标识，请注意，在未关注或关注公众号时，用户访问公众号的授权网页后都会产生同一个OpenID
 	UnionId string `json:"unionid,omitempty"` // 当且仅当该网站应用已获得该用户的userinfo授权时，才会出现该字段
 	Scope   string `json:"scope,omitempty"`   // 用户授权的作用域，使用逗号（,）分隔
 }
