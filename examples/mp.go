@@ -84,14 +84,7 @@ func _Callback(ctx *gin.Context) {
 
 // 验证服务器配置, 请使用正式的服务器配置Token
 func _VerifySetting(ctx *gin.Context) {
-	// checkSignature
-	timestamp := ctx.Query("timestamp")
-	nonce := ctx.Query("nonce")
-	signature := ctx.Query("signature")
-	echostr := ctx.Query("echostr")
-
-	if util.CheckSignature(signature, Token, timestamp, nonce) {
-		ctx.String(http.StatusOK, echostr)
+	if core.VerifySetting(Token, ctx.Writer, ctx.Request) {
 		sugar.Debug("match signature")
 	} else {
 		sugar.Debug("no match signature")
