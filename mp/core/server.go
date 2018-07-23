@@ -51,23 +51,3 @@ func DecryptMsg(raw, aesKey []byte, appId, token string, us url.Values) ([]byte,
 
 	return data, nil
 }
-
-type CipherBody struct {
-	XMLName      xml.Name `xml:"xml"`
-	ToUserName   string   `xml:"ToUserName"`
-	EncryptedMsg string   `xml:"Encrypt"` // base64 std encoded
-}
-
-type MixedMsg struct {
-	XMLName xml.Name `xml:"xml"`
-	MsgHeader
-	Event string `xml:"Event" json:"Event"`
-}
-
-// 微信服务器推送过来的消息(事件)的通用消息头.
-type MsgHeader struct {
-	ToUserName   string `xml:"ToUserName"   json:"ToUserName"`
-	FromUserName string `xml:"FromUserName" json:"FromUserName"`
-	CreateTime   int64  `xml:"CreateTime"   json:"CreateTime"`
-	MsgType      string `xml:"MsgType"      json:"MsgType"`
-}
