@@ -29,7 +29,7 @@ func VerifySetting(token string, w http.ResponseWriter, r *http.Request) bool {
 
 // https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1434696670
 // https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419318479&token=&lang=zh_CN
-func (or *MsgCryptor) Descrypt(raw []byte, us url.Values) ([]byte, error) {
+func (or *MsgCryptor) Decrypt(raw []byte, us url.Values) ([]byte, error) {
 	var tmpBody CipherRequestBody
 
 	err := xml.Unmarshal(raw, &tmpBody)

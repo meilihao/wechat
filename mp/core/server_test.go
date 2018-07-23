@@ -22,7 +22,7 @@ func TestDecryptMsg(t *testing.T) {
 	us.Set("timestamp", "1409659813")
 	us.Set("nonce", "1372623149")
 
-	data, err := or.Descrypt(raw, us)
+	data, err := or.Decrypt(raw, us)
 	if err != nil {
 		t.Fatal(err)
 	} else {
@@ -44,7 +44,7 @@ func TestEncryptMsg(t *testing.T) {
 	xml.Unmarshal(buf.Bytes(), tmp)
 
 	us.Set("msg_signature", tmp.MsgSignature)
-	data, err := or.Descrypt(buf.Bytes(), us)
+	data, err := or.Decrypt(buf.Bytes(), us)
 	if err != nil {
 		t.Fatal(err)
 	} else {
