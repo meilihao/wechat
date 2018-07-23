@@ -1,12 +1,39 @@
 package core
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+
+	"github.com/meilihao/wechat/util"
+)
+
+type MsgCryptor struct {
+	AppId  string
+	Token  string
+	AESKey []byte
+}
+
+func NewMsgCryptor(appId, token, encodingAESKey string) *MsgCryptor {
+	return &MsgCryptor{
+		Token:  token,
+		AESKey: util.DecodeAESKey(encodingAESKey),
+		AppId:  appId,
+	}
+}
 
 // 来自微信服务器的加密消息
-type CipherBody struct {
+type CipherRequestBody struct {
 	XMLName      xml.Name `xml:"xml"`
 	ToUserName   string   `xml:"ToUserName"`
 	EncryptedMsg string   `xml:"Encrypt"` // base64 std encoded
+}
+
+// 发送给微信服务器的消息
+type CipherResponseBody struct {
+	XMLName      xml.Name `xml:"xml"`
+	EncryptedMsg string   `xml:"Encrypt"` // base64 std encoded
+	MsgSignature string   `xml:"MsgSignature"`
+	TimeStamp    string   `xml:"TimeStamp"`
+	Nonce        string   `xml:"Nonce"`
 }
 
 // MsgType 基本消息类型

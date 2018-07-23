@@ -11,6 +11,10 @@ import (
 	"strings"
 )
 
+const (
+	AESBlockSize = 32
+)
+
 func CheckSignature(signature string, strs ...string) bool {
 	return GenerateSign(strs...) == signature
 }
@@ -42,21 +46,53 @@ func AESDecrypt(key []byte, text string) ([]byte, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
+	if len(data) < AESBlockSize {
+		return nil, "", errors.New("ciphertext too short")
+	}
 
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, "", err
 	}
-	if len(data) < aes.BlockSize {
-		return nil, "", errors.New("ciphertext too short")
-	}
 
 	cbc := cipher.NewCBCDecrypter(block, key[:16])
 	cbc.CryptBlocks(data, data)
 
-	data = Pkcs7Unpadding(data)
+	data = PKCS7Unpadding(data)
 
 	msgLen := buildMsgLen(data[16:20])
 
 	return data[20 : 20+msgLen], string(data[20+msgLen:]), nil
+}
+
+// ciphertext = AES_Encrypt[random(16B) + msg_len(4B) + rawXMLMsg + appId]
+func AESEecrypt(key, msg []byte, appId string) []byte {
+	random := Rand(16)
+	originLen := 20 + len(msg) + len(appId)
+	padding := AESBlockSize - originLen%AESBlockSize
+	sum := originLen + padding
+
+	plaintext := make([]byte, sum)
+
+	copy(plaintext[:16], random)
+	genarateMsgLen(plaintext[16:20], uint32(len(msg)))
+	copy(plaintext[20:], msg)
+	copy(plaintext[20+len(msg):], appId)
+
+	for i := originLen; i < sum; i++ {
+		plaintext[i] = byte(padding)
+	}
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+
+	cbc := cipher.NewCBCEncrypter(block, key[:16])
+	cbc.CryptBlocks(plaintext, plaintext)
+
+	dst := make([]byte, base64.StdEncoding.EncodedLen(sum))
+	base64.StdEncoding.Encode(dst, plaintext)
+
+	return dst
 }
